@@ -13,7 +13,7 @@ local cx = 0
 local cy = 0
 local cscale = 1
 local cscalespeed = 0.2
-local cspeed = 150
+local cspeed = 300
 
 function love.keypressed(key)
     if key == 'space' then
@@ -60,8 +60,8 @@ end
 
 function love.draw()
     love.graphics.push()
-    love.graphics.scale(cscale)
     love.graphics.translate(-cx + love.graphics.getWidth() / 2, -cy + love.graphics.getHeight() / 2)
+    love.graphics.scale(cscale)
 
     if ddcel then
         dcel.draw(ddcel, {0, 0, 1, 1}, {1, 1, 1, 1})
