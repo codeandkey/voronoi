@@ -67,7 +67,7 @@ function love.draw()
         dcel.draw(ddcel, {0, 0, 1, 1}, {1, 1, 1, 1})
     end
 
-    voronoi.draw_state(vstate)
+    voronoi.draw_state(vstate, cx - love.graphics.getWidth() / 2, cx + love.graphics.getWidth() / 2)
 
     love.graphics.pop()
 end

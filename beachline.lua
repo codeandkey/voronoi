@@ -267,9 +267,9 @@ function beachline.insert_arc(bl, bly, site)
     return arc_a, arc_b, arc_c, breakpoint_left, breakpoint_right, circle_event
 end
 
-function beachline.draw(bl, bly)
-    xmin = 0
-    xmax = love.graphics.getWidth()
+function beachline.draw(bl, bly, l, r)
+    xmin = l
+    xmax = r
 
     --print('Starting beachline draw.')
 

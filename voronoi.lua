@@ -17,7 +17,10 @@ function voronoi.init(vsites)
         eq.push(q, {
             type = 'site',
             point = point,
+            sname = name,
         })
+
+        print(string.format('added site event %s at (%f, %f)', name, point.x, point.y))
 
         point.face = dcel.new_face(vdcel, string.format('c%d', point.index))
         point.face.site = point
@@ -38,12 +41,15 @@ function voronoi.init(vsites)
 end
 
 function voronoi.step(self)
+    eq.dump(self.q)
     local next_event = eq.pop(self.q)
 
     -- No more events.
     if next_event == nil then
         return false
     end
+
+    print(string.format('handling event %s, point = (%f, %f)', next_event.type, next_event.point.x, next_event.point.y))
 
     if next_event.type == 'site' then
         -- Handle site event.
@@ -215,7 +221,7 @@ function voronoi.check_circle_event(self, check)
     eq.push(self.q, new_event)
 end
 
-function voronoi.draw_state(self)
+function voronoi.draw_state(self, l, r)
     love.graphics.setColor(1, 1, 1, 1)
     for name, p in pairs(self.vsites) do
         love.graphics.rectangle('fill', p.x - 2, p.y - 2, 2, 2)
@@ -225,7 +231,7 @@ function voronoi.draw_state(self)
     dcel.draw(self.vdcel, {1, 0, 0, 1}, {1, 1, 1, 1})
 
     love.graphics.setColor(0, 1, 0, 1)
-    love.graphics.line(0, self.bly, love.graphics.getWidth(), self.bly)
+    love.graphics.line(l, self.bly, r, self.bly)
 
     if not self.finalized then
         love.graphics.setColor(1, 0, 1, 1)
@@ -233,7 +239,7 @@ function voronoi.draw_state(self)
             love.graphics.rectangle('fill', p.x - 2, p.y - 2, 2, 2)
         end
 
-        beachline.draw(self.bl, self.bly)
+        beachline.draw(self.bl, self.bly, l, r)
     end
 end
 
@@ -244,12 +250,16 @@ function voronoi.finalize(self)
     -- Collect inner nodes in the beachline.
     -- All remaining breakpoints correspond to edges we need to intersect.
 
+    print('finalizing')
+
     local remaining = beachline.collect_remaining(self.bl)
 
     local bleft = math.huge
     local bright = -math.huge
     local btop = math.huge
     local bbottom = -math.huge
+
+    print('computing bounding box')
 
     -- just make sure everything is in the bounding box
     for _, v in pairs(self.vdcel.vertices) do
@@ -271,6 +281,7 @@ function voronoi.finalize(self)
     btop = btop - voronoi.boundary_padding
     bbottom = bbottom + voronoi.boundary_padding
 
+    print('preprocessing rays')
     -- collect relevant information for each ray
     for _, v in ipairs(remaining) do
         local cx = arc.breakpoint(v.first, v.second, self.bly)
@@ -284,6 +295,7 @@ function voronoi.finalize(self)
     end
 
     -- start intersecting rays
+    print('intersecting rays')
 
     -- left bounding box
     local left_rays = {}
@@ -480,7 +492,7 @@ function voronoi.finalize(self)
             dcel.connect(last_inner, last_edge)
         end
 
-        if last_twin_edge then
+        if last_twin then
             dcel.connect(last_twin_edge, last_twin)
         end
 
@@ -488,11 +500,16 @@ function voronoi.finalize(self)
     end
 
     -- fill DCEL for each corner
+    print('filling bottom dcel')
     local bfirst, blast = fill_dcel(b_bl, b_br, bottom_rays)
+    print('filling right dcel')
     local rfirst, rlast = fill_dcel(b_br, b_tr, right_rays)
+    print('filling top dcel')
     local tfirst, tlast = fill_dcel(b_tr, b_tl, top_rays)
+    print('filling left dcel')
     local lfirst, llast = fill_dcel(b_tl, b_bl, left_rays)
 
+    print('connecting corners')
     -- reconnect corners
     dcel.connect(blast, rfirst)
     dcel.connect(rfirst.twin, blast.twin)
@@ -507,6 +524,7 @@ function voronoi.finalize(self)
     dcel.connect(bfirst.twin, llast.twin)
 
     -- rename inner edges
+    print('renaming edges')
     for _, e in pairs(self.vdcel.halfedges) do
         if e.prev then
             e.prev.next = e
@@ -534,18 +552,15 @@ function voronoi.finalize(self)
     -- init unbounded face
     uf.inneredge = bfirst.twin
 
-    -- fill remaining inner faces (particularly boundary edges)
-    for _, f in pairs(self.vdcel.faces) do
-        if f.name:sub(1, 1) == 'c' then
-            local start = f.outeredge
-            start.incident_face = f
+    print('completing faces')
 
-            local cur = start.next
+    -- fill remaining faces (particularly boundary edges)
+    for _, f in pairs(self.vdcel.halfedges) do
+        local cur = f.next
 
-            while cur and cur ~= start do
-                cur.incident_face = f
-                cur = cur.next
-            end
+        while cur ~= f do
+            cur.incident_face = f.incident_face
+            cur = cur.next
         end
     end
 

@@ -25,8 +25,8 @@ function delaunay.generate(vdcel)
     for _, e in pairs(vdcel.halfedges) do
         if e.incident_face.name:sub(1, 1) == 'c' then
             if e.twin.incident_face.name:sub(1, 1) == 'c' then
-                local first = tonumber(e.incident_face.name:sub(2, 2))
-                local second = tonumber(e.twin.incident_face.name:sub(2, 2))
+                local first = tonumber(e.incident_face.name:sub(2, -1))
+                local second = tonumber(e.twin.incident_face.name:sub(2, -1))
 
                 if first < second then
                     -- Connect first to second with two half edges.

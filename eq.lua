@@ -13,22 +13,17 @@ function eq.create()
     }
 end
 
---- Returns true if a is higher priority than b.
+--- Returns true if a is strictly higher priority than b.
 function eq.cmp(a, b)
     if a.y < b.y then
         return true
-    elseif b.y < a.y then
-        return false
-    else
-        if a.x < b.x then
-            return true
-        elseif b.x < a.x then
-            return false
-        else
-            print(string.format('WARNING: eq.cmp() called on two identical points (%d, %d), (%d, %d)', a.x, a.y, b.x, b.y))
-            return false
-        end
     end
+
+    if a.y == b.y and a.x < b.x then
+        return true
+    end
+
+    return false
 end
 
 function eq.push(q, ev)
@@ -86,8 +81,8 @@ end
 function eq.remove(q, ev)
     -- First find the event.
     local loc = nil
-    for i, v in pairs(q.buf) do
-        if v == ev then
+    for i=1,q.count do
+        if q.buf[i] == ev then
             loc = i
         end
     end
@@ -95,6 +90,8 @@ function eq.remove(q, ev)
     if loc == nil then
         return
     end
+
+    --print(string.format('removing ev: %s at (%d %d) [loc=%d]', ev.type, ev.point.x, ev.point.y, loc))
 
     if loc == q.count then
         q.buf[loc] = nil
@@ -104,7 +101,6 @@ function eq.remove(q, ev)
 
     local ret = q.buf[loc]
 
-    q.buf[loc] = nil
     q.buf[loc] = q.buf[q.count]
     q.count = q.count - 1
 
@@ -132,6 +128,18 @@ end
 
 function eq.empty(q)
     return q.count == 0
+end
+
+function eq.dump(q)
+    for i=1,q.count do
+        local e = q.buf[i]
+
+        if e.type == 'site' then
+            --print(string.format('%d => %s:(%d, %d)', i, e.sname, e.point.x, e.point.y))
+        else
+            --print(string.format('%d => circ:(%d, %d)', i, e.point.x, e.point.y))
+        end
+    end
 end
 
 return eq
