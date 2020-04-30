@@ -1,0 +1,82 @@
+****** Voronoi diagram ******
+
+v1 (491.095051, 392.305838) e1,2
+v2 (432.352259, 432.352259) e2,3
+v3 (382.723882, 475.734502) e3,b5
+b1 (100.000000, 737.000000) eb1,b5
+b2 (700.000000, 737.000000) eb2,b6
+b3 (700.000000, 78.000000) eb3,b7
+b4 (100.000000, 78.000000) eb4,b8
+b5 (382.723882, 737.000000) eb5,b2
+b6 (700.000000, 438.563550) eb6,b3
+b7 (437.550485, 78.000000) eb7,b4
+b8 (100.000000, 102.509723) eb8,b9
+b9 (100.000000, 205.236792) eb9,b1
+
+c3 nil e3,b9
+c4 nil eb7,1
+c1 nil eb9,3
+c2 nil eb8,2
+c5 nil e3,b5
+uf eb5,b1 nil
+
+e1,b7 v1 eb7,1 c2 eb7,b4 e2,1
+eb7,1 b7 e1,b7 c4 e1,b6 eb3,b7
+e2,b8 v2 eb8,2 c1 eb8,b9 e3,2
+eb8,2 b8 e2,b8 c2 e2,1 eb4,b8
+e3,b9 v3 eb9,3 c3 eb9,b1 eb5,3
+eb9,3 b9 e3,b9 c1 e3,2 eb8,b9
+eb6,1 b6 e1,b6 c5 e1,2 eb2,b6
+e1,b6 v1 eb6,1 c4 eb6,b3 eb7,1
+e1,2 v1 e2,1 c5 e2,3 eb6,1
+e2,1 v2 e1,2 c2 e1,b7 eb8,2
+e2,3 v2 e3,2 c5 e3,b5 e1,2
+e3,2 v3 e2,3 c1 e2,b8 eb9,3
+e3,b5 v3 eb5,3 c5 eb5,b2 e2,3
+eb5,3 b5 e3,b5 c3 e3,b9 eb1,b5
+eb1,b5 b1 eb5,b1 c3 eb5,3 eb9,b1
+eb5,b1 b5 eb1,b5 uf eb1,b9 eb2,b5
+eb5,b2 b5 eb2,b5 c5 eb2,b6 e3,b5
+eb2,b5 b2 eb5,b2 uf eb5,b1 eb6,b2
+eb2,b6 b2 eb6,b2 c5 eb6,1 eb5,b2
+eb6,b2 b6 eb2,b6 uf eb2,b5 eb3,b6
+eb6,b3 b6 eb3,b6 c4 eb3,b7 e1,b6
+eb3,b6 b3 eb6,b3 uf eb6,b2 eb7,b3
+eb3,b7 b3 eb7,b3 c4 eb7,1 eb6,b3
+eb7,b3 b7 eb3,b7 uf eb3,b6 eb4,b7
+eb7,b4 b7 eb4,b7 c2 eb4,b8 e1,b7
+eb4,b7 b4 eb7,b4 uf eb7,b3 eb8,b4
+eb4,b8 b4 eb8,b4 c2 eb8,2 eb7,b4
+eb8,b4 b8 eb4,b8 uf eb4,b7 eb9,b8
+eb8,b9 b8 eb9,b8 c1 eb9,3 e2,b8
+eb9,b8 b9 eb8,b9 uf eb8,b4 eb1,b9
+eb9,b1 b9 eb1,b9 c3 eb1,b5 e3,b9
+eb1,b9 b1 eb9,b1 uf eb9,b8 eb5,b1
+
+****** Delaunay triangulation ******
+
+p3 (150.000000, 302.000000) nil
+p4 (650.000000, 128.000000) nil
+p1 (200.000000, 250.000000) nil
+p2 (250.000000, 200.000000) nil
+p5 (582.000000, 687.000000) nil
+
+uf d2,4 nil
+t2 nil d4,2
+t3 nil d2,1
+t4 nil d1,3
+
+d2,4 p2 d4,2 uf d4,5 d1,2
+d4,2 p4 d2,4 t2 d2,5 d5,4
+d1,2 p1 d2,1 uf d2,4 d3,1
+d2,1 p2 d1,2 t3 d1,5 d5,2
+d1,3 p1 d3,1 t4 d3,5 d5,1
+d3,1 p3 d1,3 uf d1,2 d5,3
+d4,5 p4 d5,4 uf d5,3 d2,4
+d5,4 p5 d4,5 t2 d4,2 d2,5
+d2,5 p2 d5,2 t2 d5,4 d4,2
+d5,2 p5 d2,5 t3 d2,1 d1,5
+d1,5 p1 d5,1 t3 d5,2 d2,1
+d5,1 p5 d1,5 t4 d1,3 d3,5
+d3,5 p3 d5,3 t4 d5,1 d1,3
+d5,3 p5 d3,5 uf d3,1 d4,5
