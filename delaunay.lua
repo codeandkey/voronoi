@@ -38,8 +38,10 @@ function delaunay.generate(vdcel)
                     new_edge_twin.twin = new_edge
 
                     new_edge.origin = sitelist[first]
+                    new_edge.origin.incident_edge = new_edge
                     new_edge.dest = sitelist[second]
                     new_edge_twin.origin = sitelist[second]
+                    new_edge_twin.origin.incident_edge = new_edge_twin
                     new_edge_twin.dest = sitelist[first]
                 end
             end
