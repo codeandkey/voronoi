@@ -5,7 +5,7 @@ local beachline = require 'beachline'
 local util = require 'util'
 local delaunay = require 'delaunay'
 
-local vsites = sites.parse('sites.txt')
+local vsites = sites.parse(arg[1] or 'sites.txt')
 local vstate = voronoi.init(vsites)
 local ddcel = nil
 
